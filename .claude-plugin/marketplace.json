@@ -1,16 +1,17 @@
 {
-  "name": "Matt Butler's Claude Plugins",
-  "description": "A collection of productivity and writing plugins for Claude Code",
-  "author": {
+  "name": "matt-butler-claude-plugins",
+  "owner": {
     "name": "Matt Butler",
-    "url": "https://github.com/mattbutlerengineering"
+    "email": "[email protected]"
   },
-  "homepage": "https://github.com/mattbutlerengineering/claude-plugins",
-  "repository": "https://github.com/mattbutlerengineering/claude-plugins",
+  "metadata": {
+    "description": "A collection of productivity and writing plugins for Claude Code",
+    "repository": "https://github.com/mattbutlerengineering/claude-plugins"
+  },
   "plugins": [
     {
       "name": "ux-writing-helper",
-      "path": "./plugins/ux-writing-helper",
+      "source": "./plugins/ux-writing-helper",
       "version": "1.0.0",
       "description": "Comprehensive UX writing assistant with industry best practices, systematic review checklists, and tone guidelines",
       "keywords": ["ux", "writing", "content-design", "copywriting", "microcopy", "tone", "accessibility"]
