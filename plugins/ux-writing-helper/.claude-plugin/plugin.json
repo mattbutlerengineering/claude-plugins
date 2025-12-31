@@ -1,0 +1,25 @@
+{
+  "name": "ux-writing-helper",
+  "version": "1.0.0",
+  "description": "Comprehensive UX writing assistant with industry best practices, systematic review checklists, and tone guidelines. Helps write clear, empathetic, user-focused copy for buttons, errors, onboarding, and all user-facing text.",
+  "author": {
+    "name": "Matt Butler",
+    "url": "https://github.com/mattbutlerengineering"
+  },
+  "homepage": "https://github.com/mattbutlerengineering/claude-plugins",
+  "repository": "https://github.com/mattbutlerengineering/claude-plugins",
+  "license": "MIT",
+  "keywords": [
+    "ux",
+    "writing",
+    "content-design",
+    "copywriting",
+    "microcopy",
+    "tone",
+    "accessibility",
+    "user-experience",
+    "ui-copy"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/"
+}
