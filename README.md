@@ -57,9 +57,29 @@ Comprehensive UX writing assistant that helps you write clear, empathetic, user-
 
 ---
 
-## Coming Soon
+### 🎮 Borderlands 4 SHiFT Codes
 
-More plugins are in development! Check back for updates or watch this repository.
+**Version**: 1.0.0
+**Install**: `/plugin install borderlands-shift-codes`
+
+Discover, track, and redeem Borderlands 4 SHiFT codes for Golden Keys and cosmetic rewards.
+
+**Features**:
+- **Find Codes**: Search the web for current active SHiFT codes
+- **Track Codes**: Maintain a local file of redeemed/pending codes
+- **Auto-Redeem**: Browser automation to redeem codes (requires `--chrome` mode)
+- **Cross-Reference**: Check multiple trusted gaming news sources
+- **Code Validation**: Verify code format before redemption
+- **Platform Support**: PS5, Xbox, Steam, Epic Games Store
+
+**Commands**:
+- `/borderlands-shift-codes:get-codes` - Search for active codes
+- `/borderlands-shift-codes:redeem` - Automate redemption
+- `/borderlands-shift-codes:track-codes` - Manage tracked codes
+
+**Best for**: Borderlands players who want to maximize Golden Keys and cosmetic rewards
+
+**Learn more**: [Borderlands SHiFT Codes Documentation](./plugins/borderlands-shift-codes/README.md)
 
 ---
 

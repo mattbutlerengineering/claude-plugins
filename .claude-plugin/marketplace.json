@@ -15,6 +15,13 @@
       "version": "1.0.0",
       "description": "Comprehensive UX writing assistant with industry best practices, systematic review checklists, and tone guidelines",
       "keywords": ["ux", "writing", "content-design", "copywriting", "microcopy", "tone", "accessibility"]
+    },
+    {
+      "name": "borderlands-shift-codes",
+      "source": "./plugins/borderlands-shift-codes",
+      "version": "1.0.0",
+      "description": "Discover, track, and redeem Borderlands 4 SHiFT codes for Golden Keys and cosmetic rewards",
+      "keywords": ["borderlands", "borderlands-4", "shift-codes", "golden-keys", "gearbox", "gaming", "rewards"]
     }
   ]
 }

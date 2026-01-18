@@ -1,0 +1,24 @@
+{
+  "name": "borderlands-shift-codes",
+  "version": "1.0.0",
+  "description": "Discover, track, and redeem Borderlands 4 SHiFT codes for Golden Keys and cosmetic rewards. Includes web search for current codes, local tracking, and browser automation for redemption.",
+  "author": {
+    "name": "Matt Butler",
+    "url": "https://github.com/mattbutlerengineering"
+  },
+  "homepage": "https://github.com/mattbutlerengineering/claude-plugins",
+  "repository": "https://github.com/mattbutlerengineering/claude-plugins",
+  "license": "MIT",
+  "keywords": [
+    "borderlands",
+    "borderlands-4",
+    "shift-codes",
+    "golden-keys",
+    "gearbox",
+    "gaming",
+    "rewards",
+    "browser-automation"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/"
+}
