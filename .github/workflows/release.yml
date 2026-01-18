@@ -1,0 +1,158 @@
+name: Release Plugins
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/**'
+      - '.claude-plugin/**'
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create Plugin Releases
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Validate plugins
+        run: .github/scripts/validate-plugins.sh
+
+      - name: Detect changed plugins and create releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Get the list of changed files between HEAD and HEAD~1
+          # If this is the first commit, compare against empty tree
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          else
+            CHANGED_FILES=$(git ls-tree --name-only -r HEAD)
+          fi
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          echo ""
+
+          # Track which plugins have changes
+          declare -A CHANGED_PLUGINS
+
+          # Find plugins with changes
+          for file in $CHANGED_FILES; do
+            if [[ "$file" =~ ^plugins/([^/]+)/ ]]; then
+              plugin_name="${BASH_REMATCH[1]}"
+              CHANGED_PLUGINS["$plugin_name"]=1
+            fi
+          done
+
+          # Process each changed plugin
+          for plugin_name in "${!CHANGED_PLUGINS[@]}"; do
+            echo "Processing plugin: $plugin_name"
+
+            plugin_json="plugins/$plugin_name/.claude-plugin/plugin.json"
+
+            if [ ! -f "$plugin_json" ]; then
+              echo "  No plugin.json found, skipping"
+              continue
+            fi
+
+            # Get current version
+            current_version=$(jq -r '.version' "$plugin_json")
+            if [ -z "$current_version" ] || [ "$current_version" = "null" ]; then
+              echo "  No version found in plugin.json, skipping"
+              continue
+            fi
+
+            # Create release tag
+            tag="${plugin_name}-v${current_version}"
+
+            # Check if tag already exists
+            if git tag -l "$tag" | grep -q "$tag"; then
+              echo "  Tag $tag already exists, skipping"
+              continue
+            fi
+
+            # Check if remote tag exists
+            if git ls-remote --tags origin | grep -q "refs/tags/$tag"; then
+              echo "  Remote tag $tag already exists, skipping"
+              continue
+            fi
+
+            echo "  Creating release: $tag"
+
+            # Get plugin description for release notes
+            description=$(jq -r '.description // "No description available"' "$plugin_json")
+
+            # Get commit messages for this plugin since last tag
+            last_tag=$(git tag -l "${plugin_name}-v*" --sort=-v:refname | head -n 1)
+
+            if [ -n "$last_tag" ]; then
+              commits=$(git log --oneline "$last_tag"..HEAD -- "plugins/$plugin_name" | head -20)
+            else
+              commits=$(git log --oneline HEAD -- "plugins/$plugin_name" | head -20)
+            fi
+
+            # Build release notes
+            release_notes="## $plugin_name v$current_version
+
+$description
+
+### Changes
+\`\`\`
+$commits
+\`\`\`
+"
+
+            # Create the release using gh CLI
+            gh release create "$tag" \
+              --title "$plugin_name v$current_version" \
+              --notes "$release_notes" \
+              --target main
+
+            echo "  Release $tag created successfully"
+          done
+
+          # Check for marketplace changes
+          if echo "$CHANGED_FILES" | grep -q "^\.claude-plugin/marketplace.json"; then
+            echo ""
+            echo "Marketplace.json changed, creating marketplace release..."
+
+            # Use date-based versioning for marketplace
+            marketplace_version=$(date +%Y.%m.%d)
+            marketplace_tag="marketplace-v${marketplace_version}"
+
+            # Add timestamp if tag already exists
+            if git ls-remote --tags origin | grep -q "refs/tags/$marketplace_tag"; then
+              marketplace_tag="marketplace-v${marketplace_version}-$(date +%H%M%S)"
+            fi
+
+            # Get list of plugins in marketplace
+            plugins_list=$(jq -r '.plugins[].name' .claude-plugin/marketplace.json | tr '\n' ', ' | sed 's/,$//')
+
+            marketplace_notes="## Marketplace Update
+
+Updated marketplace catalog.
+
+### Included Plugins
+$plugins_list
+"
+
+            gh release create "$marketplace_tag" \
+              --title "Marketplace Update $marketplace_version" \
+              --notes "$marketplace_notes" \
+              --target main
+
+            echo "Marketplace release $marketplace_tag created successfully"
+          fi
+
+          echo ""
+          echo "Release process completed"

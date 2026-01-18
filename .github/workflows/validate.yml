@@ -1,0 +1,22 @@
+name: Validate Plugins
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'plugins/**'
+      - '.claude-plugin/**'
+      - '.github/scripts/**'
+      - '.github/workflows/validate.yml'
+
+jobs:
+  validate:
+    name: Validate Plugin Structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.0
+
+      - name: Validate plugins
+        run: .github/scripts/validate-plugins.sh
